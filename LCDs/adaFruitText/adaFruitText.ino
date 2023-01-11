@@ -9,6 +9,15 @@
 #define TFT_DC         32
 #define TFT_MOSI 19  // Data out
 #define TFT_SCLK 18  // Clock out
+#define TFT_BG 0x0F7D
+#define TFT_TXT 0x1587
+#define L2 25
+#define L3 45
+#define L4 65
+#define L5 85
+#define L6 105
+#define L7 125
+
 
 // For 1.44" and 1.8" TFT with ST7735 use:
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
@@ -27,17 +36,22 @@ void setup(void) {
 
   uint16_t time = millis();
   tft.fillScreen(ST77XX_BLACK);
-  tft.setRotation(2);
+  tft.setRotation(4);
   time = millis() - time;
 
   Serial.println(time, DEC);
   delay(500);
 
   // large block of text
-  tft.fillScreen(ST77XX_BLACK);
-  tft.setTextColor(0xFFFF, 0x0000);
+  tft.fillScreen(TFT_BG);
+
+  //                Text    Background
+  tft.setTextColor(TFT_TXT, TFT_BG);
   tft.setTextWrap(false);
 
+  tft.drawFastHLine(0, 42, 128, ST77XX_BLACK);
+  tft.drawFastHLine(0, 82, 128, ST77XX_BLACK);
+  tft.cp437(false);
 
   delay(1000);
 
@@ -47,35 +61,43 @@ void setup(void) {
 }
 
 void loop() {
+  tft.setTextSize(2);
+  tft.setCursor(28, 5); // Position at top-left corner
+  tft.setTextColor(ST77XX_BLACK);
+  tft.print("Thrust"); // Print a message
+  tft.setTextColor(TFT_TXT, TFT_BG);
+  tft.setCursor(10, L2); // Position at top-left corner
+  tft.print(count); // Print a message
+  tft.print("%"); // Print a message
+  tft.setCursor(74, L2); // Position at top-left corner
+  tft.print(count); // Print a message
+  tft.print("%"); // Print a message
 
-    tft.setCursor(0, 0); // Position at top-left corner
-    tft.print("Hello"); // Print a message
-    delay(1000); // Pause 1 second
-    tft.setCursor(0, 0); // Back to top-left corner
-    tft.print("World"); // Print another message, same length
-    tft.setCursor(0, 20); // Position at top-left corner
-    tft.print(count);
+  tft.setCursor(10, L3); // Position at top-left corner
+  tft.setTextColor(ST77XX_BLACK);
+  tft.print("Bat:"); // Print a message
+  tft.setTextColor(TFT_TXT, TFT_BG);
+  tft.print(count); // Print a message
+  tft.print("V "); // Print a message
+  tft.setCursor(10, L4); // Position at top-left corner
+  tft.print(count); // Print a message
+  tft.print("A "); // Print a message
+  tft.print(count); // Print a message
+  tft.print("W"); // Print a message
 
-    /*
-      tft.setCursor(0, 5);
-      tft.setTextColor(ST77XX_BLACK);
-      tft.setTextSize(2);
-      tft.println("Speed: ");
-      tft.setCursor(70, 5);
+  tft.setCursor(46, L5); // Position at top-left corner
+  tft.setTextColor(ST77XX_BLACK);
+  tft.print("GPS"); // Print a message
+  tft.setTextColor(TFT_TXT, TFT_BG);
+  tft.setCursor(10, L6); // Position at top-left corner
+  tft.print(count); // Print a message
+  tft.print("kmph"); // Print a message
+  tft.setCursor(10, L7); // Position at top-left corner
+  tft.print(count); // Print a message
+  tft.print("Deg"); // Print a message
 
-      tft.print(count);
-      tft.print(1234.567);
 
-      tft.setCursor(0, 20);
-      tft.print(p, 6);
 
-      tft.setCursor(0, 35);
-      tft.print(millis() / 1000);
-      tft.setTextColor(ST77XX_WHITE);
-      tft.print(" seconds.");
-      tft.setCursor(0, 50);
-    */
-
-    delay(5000);
-    count++;
-  }
+  delay(5000);
+  count++;
+}

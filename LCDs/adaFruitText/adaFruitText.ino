@@ -34,8 +34,8 @@ void setup(void) {
   delay(500);
 
   // large block of text
-  tft.fillScreen(ST77XX_WHITE);
-  tft.setTextColor(0xFFFF, 0xFFFF);
+  tft.fillScreen(ST77XX_BLACK);
+  tft.setTextColor(0xFFFF, 0x0000);
   tft.setTextWrap(false);
 
 
@@ -47,27 +47,35 @@ void setup(void) {
 }
 
 void loop() {
-  //Line 1
-  tft.setCursor(0, 5);
-  tft.setTextColor(ST77XX_BLACK);
-  tft.setTextSize(2);
-  tft.println("Speed: ");
-  tft.setCursor(70, 5);
 
-  tft.print(count);
-  /*
-    tft.print(1234.567);
+    tft.setCursor(0, 0); // Position at top-left corner
+    tft.print("Hello"); // Print a message
+    delay(1000); // Pause 1 second
+    tft.setCursor(0, 0); // Back to top-left corner
+    tft.print("World"); // Print another message, same length
+    tft.setCursor(0, 20); // Position at top-left corner
+    tft.print(count);
 
-    tft.setCursor(0, 20);
-    tft.print(p, 6);
+    /*
+      tft.setCursor(0, 5);
+      tft.setTextColor(ST77XX_BLACK);
+      tft.setTextSize(2);
+      tft.println("Speed: ");
+      tft.setCursor(70, 5);
 
-    tft.setCursor(0, 35);
-    tft.print(millis() / 1000);
-    tft.setTextColor(ST77XX_WHITE);
-    tft.print(" seconds.");
-    tft.setCursor(0, 50);
-  */
+      tft.print(count);
+      tft.print(1234.567);
 
-  delay(5000);
-  count++;
-}
+      tft.setCursor(0, 20);
+      tft.print(p, 6);
+
+      tft.setCursor(0, 35);
+      tft.print(millis() / 1000);
+      tft.setTextColor(ST77XX_WHITE);
+      tft.print(" seconds.");
+      tft.setCursor(0, 50);
+    */
+
+    delay(5000);
+    count++;
+  }

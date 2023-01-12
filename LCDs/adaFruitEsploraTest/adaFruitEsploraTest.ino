@@ -42,9 +42,9 @@ void setup(void) {
 }
 
 void loop() {
-  EsploraTFT.setCursor(28, 5); // Position at top-left corner
+  EsploraTFT.setCursor(32, 5); // Position at top-left corner
   EsploraTFT.setTextColor(TFT_BLK);
-  EsploraTFT.print("Thrust"); // Print a message
+  EsploraTFT.print("Thruster"); // Print a message
   EsploraTFT.setTextColor(TFT_TXT, TFT_BG);
   EsploraTFT.setCursor(10, L2); // Position at top-left corner
   EsploraTFT.print(count); // Print a message

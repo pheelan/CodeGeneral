@@ -4,9 +4,9 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
 #include <SPI.h>
 
-#define TFT_CS         14
-#define TFT_RST        15
-#define TFT_DC         32
+#define TFT_CS         5
+#define TFT_RST        26
+#define TFT_DC         27
 #define TFT_MOSI 19  // Data out
 #define TFT_SCLK 18  // Clock out
 #define TFT_BG 0x0F7D

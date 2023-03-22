@@ -1,42 +1,18 @@
-///////////////////////////////////////////////////////////////////////////////////////
-/*Terms of use
-  ///////////////////////////////////////////////////////////////////////////////////////
-  //THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  //IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  //FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  //AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-  //THE SOFTWARE.
 
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-  //Support
-  ///////////////////////////////////////////////////////////////////////////////////////
-  Website: http://www.brokking.net/imu.html
-  Youtube: https://youtu.be/4BoIE8YQwM8
-  Version: 1.0 (May 5, 2016)
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-  //Connections
-  ///////////////////////////////////////////////////////////////////////////////////////
-  Power (5V) is provided to the Arduino pro mini by the FTDI programmer
-
-  Gyro - Arduino pro mini
-  VCC  -  5V
-  GND  -  GND
-  SDA  -  A4
-  SCL  -  A5
-
-  LCD  - Arduino pro mini
-  VCC  -  5V
-  GND  -  GND
-  SDA  -  A4
-  SCL  -  A5
-*//////////////////////////////////////////////////////////////////////////////////////
 
 
 #include <Wire.h>
+#include <QMC5883LCompass.h>
+#include "MedianFilterLib2.h"
+
+MedianFilter2<int> medianFilter(100); //Take 100 samples, 5 sec for reading to settle
+QMC5883LCompass compass;
+
+#define trueNorthOffset 10
+
+//Compass variables
+unsigned long previousMillis = 0;  // will store last time LED was updated
+const long interval = 50;  // interval at which to blink (milliseconds)
 
 //Declaring some global variables
 int gyro_x, gyro_y, gyro_z;
@@ -44,24 +20,22 @@ long acc_x, acc_y, acc_z, acc_total_vector;
 int temperature;
 long gyro_x_cal, gyro_y_cal, gyro_z_cal;
 long loop_timer;
-int lcd_loop_counter;
 float angle_pitch, angle_roll;
 int angle_pitch_buffer, angle_roll_buffer;
 boolean set_gyro_angles;
 float angle_roll_acc, angle_pitch_acc;
-float angle_pitch_output, angle_roll_output;
+float angPitch, angRoll;
+
 
 
 void setup() {
   Wire.begin();                                                        //Start I2C as master
   Serial.begin(57600);                                               //Use only for debugging
   pinMode(13, OUTPUT);                                                 //Set output 13 (LED) as output
-
   setup_mpu_6050_registers();                                          //Setup the registers of the MPU-6050 (500dfs / +/-8g) and start the gyro
-
   digitalWrite(13, HIGH);                                              //Set digital output 13 high to indicate startup                                                       //Clear the LCD
 
-
+  Serial.print("Calibrating Gyro: ");
   for (int cal_int = 0; cal_int < 2000 ; cal_int ++) {                 //Run this code 2000 times
     read_mpu_6050_data();                                              //Read the raw acc and gyro data from the MPU-6050
     gyro_x_cal += gyro_x;                                              //Add the gyro x-axis offset to the gyro_x_cal variable
@@ -69,11 +43,21 @@ void setup() {
     gyro_z_cal += gyro_z;                                              //Add the gyro z-axis offset to the gyro_z_cal variable
     delay(3);                                                          //Delay 3us to simulate the 250Hz program loop
   }
+  Serial.println("Finished");
+
+
   gyro_x_cal /= 2000;                                                  //Divide the gyro_x_cal variable by 2000 to get the avarage offset
   gyro_y_cal /= 2000;                                                  //Divide the gyro_y_cal variable by 2000 to get the avarage offset
   gyro_z_cal /= 2000;                                                  //Divide the gyro_z_cal variable by 2000 to get the avarage offset                                                //Print text to screen
 
   digitalWrite(13, LOW);                                               //All done, turn the LED off
+
+  compass.init();
+  //  compass.setCalibration(-667, 1600, -1155, 1162, -906, 1360);
+  compass.setCalibration(-742, 1535, -1040, 1152, -790, 1287);
+
+
+  //compass.setSmoothing(5, true);
 
   loop_timer = micros();                                               //Reset the loop timer
 }
@@ -116,20 +100,62 @@ void loop() {
   }
 
   //To dampen the pitch and roll angles a complementary filter is used
-  angle_pitch_output = angle_pitch_output * 0.9 + angle_pitch * 0.1;   //Take 90% of the output pitch value and add 10% of the raw pitch value
-  angle_roll_output = angle_roll_output * 0.9 + angle_roll * 0.1;      //Take 90% of the output roll value and add 10% of the raw roll value
+  angPitch = angPitch * 0.9 + angle_pitch * 0.1;   //Take 90% of the output pitch value and add 10% of the raw pitch value
+  angRoll = angRoll * 0.9 + angle_roll * 0.1;      //Take 90% of the output roll value and add 10% of the raw roll value
 
 
   while (micros() - loop_timer < 4000);                                //Wait until the loop_timer reaches 4000us (250Hz) before starting the next loop
   loop_timer = micros();                                               //Reset the loop timer
 
-  Serial.print("Pitch: "); Serial.print(angle_pitch_output); Serial.print(",");
-  Serial.print("Roll: "); Serial.println(angle_roll_output);
+  //Serial.print("Pitch: "); Serial.print(angPitch); Serial.print(",");
+  //Serial.print("Roll: "); Serial.println(angRoll);
 
-  delay(10);
+  //Compass code in here
+  unsigned long currentMillis = millis();
+  if (currentMillis - previousMillis >= interval) {
+    previousMillis = currentMillis;
+    int mX, mY, mZ;
+    int angle;
+    float angPitchMag, angRollMag;
+    float compHeading;
+    int compAngle, compFilteredAngle;
+
+    //Align Pitch and roll to compass
+    angPitchMag = -angPitch * 1.4;  //Invert Pitch
+    angRollMag = angRoll * 1.4;     //Roll is ok
+
+    angPitchMag = angPitchMag * DEG_TO_RAD;
+    angRollMag = angRollMag * DEG_TO_RAD;
+
+    // Read compass values
+    compass.read();
+    // Return XYZ readings
+    mX = compass.getX();
+    mY = compass.getY();
+    mZ = compass.getZ();
+
+    //Angle Compensation formula for pitch and roll
+    float Xhorizontal = mX * cos(angPitchMag) + mY * sin(angRollMag) * sin(angPitchMag) - mZ * cos(angRollMag) * sin(angPitchMag);
+    float Yhorizontal = mY * cos(angRollMag) + mZ * sin(angRollMag);
+
+
+
+    compHeading = atan2(Yhorizontal, Xhorizontal);
+    compHeading = compHeading + trueNorthOffset * DEG_TO_RAD;
+
+    if (compHeading < 0)    compHeading += 2 * PI; // Correct for when signs are reversed.
+    if (compHeading > 2 * PI) compHeading -= 2 * PI; // Correct for when heading exceeds 360-degree, especially when declination is included
+
+    // Convert radians to degrees for readability.
+    compAngle = int(compHeading * 180 / M_PI);
+
+    compFilteredAngle = medianFilter.AddValue(compAngle);
+
+    Serial.print("Heading: "); Serial.print(compAngle); Serial.print(",");
+    Serial.print("Filter Heading): "); Serial.println(compFilteredAngle);
+  }
+
 }
-
-
 void read_mpu_6050_data() {                                            //Subroutine for reading the raw gyro and accelerometer data
   Wire.beginTransmission(0x68);                                        //Start communicating with the MPU-6050
   Wire.write(0x3B);                                                    //Send the requested starting register

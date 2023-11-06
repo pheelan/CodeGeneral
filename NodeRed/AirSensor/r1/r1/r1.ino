@@ -1,10 +1,10 @@
 //https://docs.arduino.cc/tutorials/projects/control-your-iot-cloud-kit-via-mqtt-and-node-red
 
  
-#define BROKER_IP    "192.168.0.119" // important: you have to change this to your IP brocker Addres
+#define BROKER_IP    "192.168.10.121" // important: you have to change this to your IP brocker Addres
 #define DEV_NAME     "AQsensor"
-#define MQTT_USER    "mqtt_user"
-#define MQTT_PW      "mqtt_password"
+#define MQTT_USER    "mqtt_u"
+#define MQTT_PW      "mqtt_p"
 
 const char ssid[] = "emily_2GEXT;
 const char pass[] = "qazwsxed";

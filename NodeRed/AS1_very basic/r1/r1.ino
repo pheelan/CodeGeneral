@@ -1,10 +1,10 @@
-#define BROKER_IP    "192.168.140.177" // important: you have to change this to your IP brocker Addres
+#define BROKER_IP    "192.168.10.121" // important: you have to change this to your IP brocker Addres
 #define DEV_NAME     "mqttdevice"
-#define MQTT_USER    "mqtt_user"
-#define MQTT_PW      "mqtt_password"
+#define MQTT_USER    "mqtt_u"
+#define MQTT_PW      "mqtt_p"
 
-const char ssid[] = "ARGEO_Corp";
-const char pass[] = "argeovakaas14";
+const char ssid[] = "emily_2GEXT";
+const char pass[] = "qazwsxed";
 
 #include <MQTT.h>
 #include <WiFi.h>
@@ -71,7 +71,7 @@ void messageReceived(String &topic, String &payload) {
 }
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ARGEO_Corp, pass);
+  WiFi.begin(ssid, pass);
 
   // Note: Local domain names (e.g. "Computer.local" on OSX) are not supported by Arduino.
   // You need to set the IP address directly.

@@ -101,7 +101,7 @@ void loop() {
     connect();
   }
   // publish a message roughly every second.
-  if (millis() - lastMillis > 1000) {
+  if (millis() - lastMillis > 10000) {
     lastMillis = millis();
     client.publish("/hello", "world"); //PUBLISH TO TOPIC /hello MSG world
     client.publish("/temp", String(t)); //SUBSCRIBE TO TOPIC /temp, pass the value as a string

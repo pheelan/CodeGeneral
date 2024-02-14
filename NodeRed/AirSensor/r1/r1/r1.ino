@@ -6,7 +6,7 @@
 #define MQTT_USER    "mqtt_u"
 #define MQTT_PW      "mqtt_p"
 
-const char ssid[] = "emily_2GEXT;
+const char ssid[] = "emily_2GEXT";
 const char pass[] = "qazwsxed";
 
 #include <MQTT.h>
@@ -89,10 +89,7 @@ void setup() {
   pinMode(R1, OUTPUT);
   pinMode(R2, OUTPUT);
 
-  if (!ENV.begin()) {
-    Serial.println("Failed to initialize MKR ENV shield!");
-    while (1);
-  }
+
 
 }
 
@@ -100,10 +97,10 @@ void loop() {
 
   // read enrivornmental data
 
-  float t = ENV.readTemperature();
-  float h = ENV.readHumidity();
-  float p = ENV.readPressure();
-  float l = ENV.readLux();
+  float t = 123;
+  float h = 12;
+  float p = 4;
+  float l = 345;
 
   client.loop();
   if (!client.connected()) {

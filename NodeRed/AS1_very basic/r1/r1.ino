@@ -1,16 +1,23 @@
+//https://docs.arduino.cc/tutorials/projects/control-your-iot-cloud-kit-via-mqtt-and-node-red
+
 #define BROKER_IP    "192.168.10.121" // important: you have to change this to your IP brocker Addres
 #define DEV_NAME     "mqttdevice"
 #define MQTT_USER    "mqtt_u"
 #define MQTT_PW      "mqtt_p"
 
-const char ssid[] = "emily_2GEXT";
-const char pass[] = "qazwsxed";
+
+
+#define STASSID "emily_2GEXT"
+#define STAPSK  "qazwsxed"
+
+const char* ssid = STASSID;
+const char* password = STAPSK;
 
 #include <MQTT.h>
-#include <WiFi.h>
+#include <ESP8266WiFi.h>
 
-int R1 = 1;
-int R2 = 2;
+int R1 = 5;
+int R2 = 6;
 int led =  LED_BUILTIN;
 uint32_t elaps = 0;
 
@@ -60,18 +67,20 @@ void messageReceived(String &topic, String &payload) {
     if (payload == "true") {
       digitalWrite(R2, HIGH);
       digitalWrite(led, HIGH);
+      Serial.println("Relay2 is high");
 
     } else if (payload == "false") {
 
       digitalWrite(R2, LOW);
       digitalWrite(led, LOW);
+      Serial.println("Relay2 is low");
     }
   }
 
 }
 void setup() {
   Serial.begin(115200);
-  WiFi.begin(ssid, pass);
+  WiFi.begin(ssid, password);
 
   // Note: Local domain names (e.g. "Computer.local" on OSX) are not supported by Arduino.
   // You need to set the IP address directly.

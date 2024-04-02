@@ -1,0 +1,133 @@
+[
+    {
+        "id": "3330ba765bd49590",
+        "type": "tab",
+        "label": "example1 from Node-RED",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e2aff18105dcfcee",
+        "type": "debug",
+        "z": "3330ba765bd49590",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "b270b3e39d20c7db",
+        "type": "debug",
+        "z": "3330ba765bd49590",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1400,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "200939d1dca2d416",
+        "type": "comment",
+        "z": "3330ba765bd49590",
+        "name": "https://openweathermap.org/appid",
+        "info": "https://openweathermap.org/appid ",
+        "x": 240,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "6304660c.9cfb98",
+        "type": "mqtt in",
+        "z": "3330ba765bd49590",
+        "name": "",
+        "topic": "PHnoderedlecture/sensor",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "b04603e43c8d4145",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 170,
+        "y": 260,
+        "wires": [
+            [
+                "d0760869.2f89f8"
+            ]
+        ]
+    },
+    {
+        "id": "d0760869.2f89f8",
+        "type": "json",
+        "z": "3330ba765bd49590",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 400.59938049316406,
+        "y": 202.09091186523438,
+        "wires": [
+            [
+                "f1f1bca2.0e0e4"
+            ]
+        ]
+    },
+    {
+        "id": "f1f1bca2.0e0e4",
+        "type": "debug",
+        "z": "3330ba765bd49590",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "b04603e43c8d4145",
+        "type": "mqtt-broker",
+        "name": "Hive",
+        "broker": "broker.hivemq.com",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    }
+]

@@ -1,0 +1,18 @@
+T0 RHS
+T1 Middle
+T2 LHS
+T3 AMB
+Add1 Power
+Add2 Amps
+
+
+100W 11.8V 8.46A
+
+
+25_1_15_battTest2
+
+Straight to 130W
+
+11.07A 11.73V
+
+Note: at 140W I noticed a "hissing sound" from the DCDC

@@ -10,6 +10,7 @@
 		<Property Name="server.vi.callsEnabled" Type="Bool">true</Property>
 		<Property Name="server.vi.propertiesEnabled" Type="Bool">true</Property>
 		<Property Name="specify.custom.address" Type="Bool">false</Property>
+		<Item Name="DGHD5331_3R.vi" Type="VI" URL="../DGHD5331_3R.vi"/>
 		<Item Name="DGHD5331_timestamp.vi" Type="VI" URL="../DGHD5331_timestamp.vi"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
@@ -82,7 +83,7 @@
 				<Property Name="Source[0].itemID" Type="Str">{3FE01A4A-CF91-4645-A6B2-D26E27588EAA}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
-				<Property Name="Source[1].itemID" Type="Ref">/My Computer/DGHD5331_timestamp.vi</Property>
+				<Property Name="Source[1].itemID" Type="Ref">/My Computer/DGHD5331_3R.vi</Property>
 				<Property Name="Source[1].sourceInclusion" Type="Str">TopLevel</Property>
 				<Property Name="Source[1].type" Type="Str">VI</Property>
 				<Property Name="SourceCount" Type="Int">2</Property>
